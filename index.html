@@ -3,563 +3,289 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة التطوير المهني | شهادات معتمدة لتطلق مسارك الوظيفي</title>
+    <title>لوحة تحكم مؤشرات الأداء</title>
     
-    <!-- Chosen Palette: Calm Professional -->
-    <!-- Application Structure Plan: A single-page, top-to-bottom scrollable application designed to function as a comprehensive landing page. The structure follows the user's report blueprint precisely, starting with a compelling Hero section to build immediate trust, followed by sections detailing competitive advantages ("Why Choose Us?"), a new interactive tabbed section for detailed platform features, a course showcase, social proof (testimonials, stats), a dedicated B2B section, updated pricing including memberships, and a final call-to-action. This linear, narrative-driven flow is chosen for its effectiveness in guiding the user through the value proposition, building confidence at each step, and culminating in a clear conversion action, making it ideal for presenting to a development company. -->
-    <!-- Visualization & Content Choices: Report Info -> Detailed platform features (e.g., content protection, certification flow, admin dashboard). Goal -> Provide a comprehensive technical and functional brief. Viz/Presentation -> Interactive tabbed interface (JS). Interaction -> User clicks tabs to reveal feature sets. Justification -> Organizes a large number of complex features into logical, digestible categories (Learner, Admin, Business) without overwhelming the user, making it perfect for a stakeholder presentation. Report Info -> Membership Tiers. Goal -> Showcase new monetization model. Viz/Presentation -> Updated pricing table with a dedicated "Memberships" card. Interaction -> Static display. Justification -> Clearly communicates the different value propositions for different user segments. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Google Fonts: Cairo for Arabic text -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
     <style>
+        /* Applying Cairo font to the body */
         body {
-            font-family: 'Tajawal', sans-serif;
-            scroll-behavior: smooth;
+            font-family: 'Cairo', sans-serif;
+            background-color: #f8fafc; /* Lighter slate color */
         }
-        .hero-bg {
-            background-color: #F8F9FA;
+        /* Custom styles for better chart responsiveness */
+        .chart-container {
+            position: relative;
+            height: 180px; /* Adjusted height for more charts */
+            width: 100%;
         }
-        .section-animated {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        .section-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .brand-logo {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            height: 50px;
-            padding: 0 20px;
-            background-color: #ffffff;
-            border: 1px solid #e0e0e0;
-            border-radius: 0.5rem;
-            font-weight: 700;
-            color: #4a5568;
-            transition: all 0.3s ease;
-        }
-        .brand-logo:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        .nav-link.active {
-            color: #2563eb;
-            font-weight: 700;
-        }
-        .tab-btn {
-            transition: all 0.3s ease;
-        }
-        .tab-btn.active {
-            background-color: #2563eb;
-            color: white;
-            box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.3);
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
+        .kpi-card {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
         }
     </style>
 </head>
-<body class="bg-white text-gray-800">
+<body class="text-slate-800">
 
-    <!-- Header -->
-    <header id="header" class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
-        <div class="container mx-auto px-6 py-3">
-            <div class="flex items-center justify-between">
-                <div class="text-2xl font-extrabold text-blue-600">
-                    <a href="#">منصتي</a>
+    <div class="container mx-auto p-4 md:p-8">
+
+        <!-- Header: Title and Time Filter -->
+        <header class="flex flex-col md:flex-row justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-slate-700 mb-4 md:mb-0">لوحة تحكم أداء الفريق</h1>
+            <div class="flex items-center gap-4">
+                <label for="time-filter" class="font-semibold">عرض بيانات:</label>
+                <select id="time-filter" class="bg-white border border-slate-300 rounded-lg shadow-sm p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="last7days">آخر 7 أيام</option>
+                    <option value="last30days" selected>آخر 30 يومًا</option>
+                    <option value="thisMonth">هذا الشهر</option>
+                    <option value="lastMonth">الشهر الماضي</option>
+                    <option value="last3Quarter">آخر 3 أشهر</option>
+                    <option value="lastYear">آخر سنة</option>
+                </select>
+            </div>
+        </header>
+
+        <!-- Main Grid for Employee Sections -->
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Card 1: Graphic Designer -->
+            <div class="kpi-card">
+                <div class="mb-4">
+                    <h2 class="text-xl font-bold text-blue-600">أحمد خليل</h2>
+                    <p class="text-sm text-slate-500">مصمم جرافيك</p>
                 </div>
-                <nav class="hidden md:flex items-center space-x-8 space-x-reverse">
-                    <a href="#features" class="nav-link text-gray-600 hover:text-blue-600 transition-colors duration-300">لماذا نحن؟</a>
-                    <a href="#platform-features" class="nav-link text-gray-600 hover:text-blue-600 transition-colors duration-300">ميزات المنصة</a>
-                    <a href="#courses" class="nav-link text-gray-600 hover:text-blue-600 transition-colors duration-300">الدورات</a>
-                    <a href="#pricing" class="nav-link text-gray-600 hover:text-blue-600 transition-colors duration-300">الأسعار</a>
-                </nav>
-                <div class="flex items-center space-x-4 space-x-reverse">
-                    <a href="#" class="text-gray-600 hover:text-blue-600 transition-colors duration-300">تسجيل الدخول</a>
-                    <a href="#" class="bg-blue-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300 transform hover:scale-105">أنشئ حساباً</a>
+                <div class="grid grid-cols-3 gap-4 mb-4 text-center">
+                    <div class="bg-blue-50 p-3 rounded-lg">
+                        <p class="text-xs text-slate-600">التصاميم</p>
+                        <p id="designs-completed" class="text-2xl font-bold">0</p>
+                    </div>
+                    <div class="bg-blue-50 p-3 rounded-lg">
+                        <p class="text-xs text-slate-600">وقت الإنجاز</p>
+                        <p id="avg-time" class="text-2xl font-bold">0</p>
+                    </div>
+                     <div class="bg-blue-50 p-3 rounded-lg">
+                        <p class="text-xs text-slate-600">التعديلات</p>
+                        <p id="revisions" class="text-2xl font-bold">0</p>
+                    </div>
+                </div>
+                <h3 class="font-semibold mb-2 text-center text-sm">مستوى الرضا عن التصاميم</h3>
+                <div class="chart-container mb-4" style="height: 140px;">
+                    <canvas id="satisfaction-chart"></canvas>
+                </div>
+                <h3 class="font-semibold mb-2 text-center text-sm">تطور إنجاز التصاميم</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="designer-progress-chart"></canvas>
                 </div>
             </div>
-        </div>
-    </header>
 
-    <main>
-        <!-- Hero Section -->
-        <section id="home" class="hero-bg">
-            <div class="container mx-auto px-6 py-24 text-center">
-                <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight">
-                    منصتك التعليمية المتكاملة.
-                    <br>
-                    <span class="text-blue-600">بشهادات معتمدة وتكنولوجيا رائدة.</span>
-                </h1>
-                <p class="mt-6 text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
-                    نقدم لك أكثر من مجرد دورات، بل نظام بيئي تعليمي متكامل يجمع بين المحتوى المحمي، التفاعل المباشر، وأدوات الإدارة القوية لضمان نجاحك ونجاح فريقك.
-                </p>
-                <div class="mt-8">
-                    <a href="#courses" class="bg-blue-600 text-white px-10 py-4 text-lg rounded-lg shadow-xl hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 inline-block">
-                        استكشف الدورات المعتمدة
-                    </a>
+            <!-- Card 2: Social Media Specialist -->
+            <div class="kpi-card">
+                <div class="mb-4">
+                    <h2 class="text-xl font-bold text-green-600">فاطمة علي</h2>
+                    <p class="text-sm text-slate-500">متخصصة سوشيال ميديا</p>
                 </div>
-                <div class="mt-12">
-                    <p class="text-sm text-gray-500 mb-4">شركاء النجاح والاعتماد</p>
-                    <div class="flex justify-center items-center space-x-6 space-x-reverse flex-wrap gap-4">
-                        <div class="brand-logo">TVTC</div>
-                        <div class="brand-logo">HRDF | هدف</div>
-                        <div class="brand-logo">NELC</div>
+                <div class="grid grid-cols-2 gap-4 mb-4 text-center">
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <p class="text-sm text-slate-600">إجمالي المتابعين</p>
+                        <p id="followers-total" class="text-3xl font-bold">0</p>
                     </div>
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <p class="text-sm text-slate-600">إجمالي التفاعل</p>
+                        <p id="interactions-total" class="text-3xl font-bold">0</p>
+                    </div>
+                </div>
+                <h3 class="font-semibold mb-2 text-sm">تطور عدد المتابعين</h3>
+                <div class="chart-container mb-4">
+                    <canvas id="followers-progress-chart"></canvas>
+                </div>
+                <h3 class="font-semibold mb-2 text-sm">تطور عدد التفاعلات</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="interactions-progress-chart"></canvas>
                 </div>
             </div>
-        </section>
 
-        <!-- Why Us Section -->
-        <section id="features" class="py-20 bg-white">
-            <div class="container mx-auto px-6">
-                <div class="text-center mb-16 section-animated">
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">لماذا تختار منصتنا؟</h2>
-                    <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">نحن لا نقدم دورات فقط، بل نقدم تجربة تعليمية متكاملة مصممة لنجاحك.</p>
+            <!-- Card 3: Media Buyer -->
+            <div class="kpi-card">
+                <div class="mb-4">
+                    <h2 class="text-xl font-bold text-purple-600">يوسف محمد</h2>
+                    <p class="text-sm text-slate-500">ميديا باير</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div class="bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 section-animated">
-                        <div class="text-4xl text-blue-600 mb-4">⚡️</div>
-                        <h3 class="text-xl font-bold mb-2">التحاق فوري</h3>
-                        <p class="text-gray-600">سجل والتحق بأي دورة في أقل من 60 ثانية. لا مزيد من الإجراءات المعقدة.</p>
+                <div class="grid grid-cols-2 gap-4 mb-4 text-center">
+                    <div class="bg-purple-50 p-3 rounded-lg">
+                        <p class="text-sm text-slate-600">العائد (ROAS)</p>
+                        <p id="roas" class="text-2xl font-bold">0x</p>
                     </div>
-                    <div class="bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 section-animated" style="transition-delay: 100ms;">
-                        <div class="text-4xl text-blue-600 mb-4">🏅</div>
-                        <h3 class="text-xl font-bold mb-2">جودة يمكنك الوثوق بها</h3>
-                        <p class="text-gray-600">دورات معتمدة ومقدمة من خبراء الصناعة، مع ضمان جودة المحتوى.</p>
+                    <div class="bg-purple-50 p-3 rounded-lg">
+                        <p class="text-sm text-slate-600">إجمالي الليدز</p>
+                        <p id="leads-total" class="text-2xl font-bold">0</p>
                     </div>
-                    <div class="bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 section-animated" style="transition-delay: 200ms;">
-                        <div class="text-4xl text-blue-600 mb-4">🔒</div>
-                        <h3 class="text-xl font-bold mb-2">حماية متقدمة للمحتوى</h3>
-                        <p class="text-gray-600">تقنيات لحماية حقوق الملكية الفكرية ومنع تسجيل الشاشة والتحميل غير المصرح به.</p>
-                    </div>
-                     <div class="bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 section-animated" style="transition-delay: 300ms;">
-                        <div class="text-4xl text-blue-600 mb-4">📱</div>
-                        <h3 class="text-xl font-bold mb-2">تجربة متكاملة</h3>
-                        <p class="text-gray-600">منصة ويب وتطبيقات جوال (iOS/Android) للتعلم من أي مكان وفي أي وقت.</p>
-                    </div>
+                </div>
+                <h3 class="font-semibold mb-2 text-sm">تطور العائد على الإنفاق (ROAS)</h3>
+                <div class="chart-container mb-4">
+                    <canvas id="roas-progress-chart"></canvas>
+                </div>
+                <h3 class="font-semibold mb-2 text-sm">تطور عدد الليدز</h3>
+                <div class="chart-container flex-grow">
+                    <canvas id="leads-progress-chart"></canvas>
                 </div>
             </div>
-        </section>
-
-        <!-- NEW: Platform Features Section -->
-        <section id="platform-features" class="py-20 bg-gray-50">
-            <div class="container mx-auto px-6">
-                <div class="text-center mb-16 section-animated">
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">نظرة شاملة على ميزات المنصة</h2>
-                    <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">كل ما تحتاجه لإطلاق وإدارة وتشغيل أكاديميتك الرقمية بنجاح.</p>
-                </div>
-
-                <!-- Tabs Buttons -->
-                <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-10 section-animated">
-                    <button class="tab-btn active text-sm md:text-base bg-white font-semibold py-3 px-6 rounded-lg shadow-sm" data-tab="learner">تجربة المتعلم</button>
-                    <button class="tab-btn text-sm md:text-base bg-white font-semibold py-3 px-6 rounded-lg shadow-sm" data-tab="certification">التقييم والشهادات</button>
-                    <button class="tab-btn text-sm md:text-base bg-white font-semibold py-3 px-6 rounded-lg shadow-sm" data-tab="business">الأعمال والتسويق</button>
-                    <button class="tab-btn text-sm md:text-base bg-white font-semibold py-3 px-6 rounded-lg shadow-sm" data-tab="admin">الإدارة والتحكم</button>
-                </div>
-
-                <!-- Tabs Content -->
-                <div class="section-animated">
-                    <!-- Learner Experience Tab -->
-                    <div id="learner" class="tab-content active">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">محاضرات مسجلة ومحمية</h4>
-                                <p class="text-gray-600">محتوى فيديو عالي الجودة مع حماية ضد تسجيل الشاشة وبرامج التحميل.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">بث مباشر (Zoom)</h4>
-                                <p class="text-gray-600">دمج كامل مع Zoom داخل المنصة لعقد محاضرات مباشرة وتفاعلية.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">تطبيقات جوال (iOS/Android)</h4>
-                                <p class="text-gray-600">تجربة تعلم سلسة عبر تطبيقات مخصصة لنظامي iOS وأندرويد.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">مجموعات نقاش مجهولة</h4>
-                                <p class="text-gray-600">مساحات آمنة للطلاب للتفاعل والنقاش دون الكشف عن هوياتهم لبعضهم البعض.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">محتوى مرئي قصير (Reels)</h4>
-                                <p class="text-gray-600">قسم مخصص للمحتوى السريع والجذاب لزيادة التفاعل والوصول.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">مدونة ومقالات</h4>
-                                <p class="text-gray-600">قسم للمقالات التعليمية والتسويق بالمحتوى لبناء المصداقية وجذب الجمهور.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Certification Tab -->
-                    <div id="certification" class="tab-content">
-                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">إصدار شهادات تلقائي</h4>
-                                <p class="text-gray-600">توليد شهادات إتمام مخصصة تلقائياً بعد استيفاء الشروط (إكمال، اختبار، واجب).</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">نظام اختبارات متقدم</h4>
-                                <p class="text-gray-600">إنشاء اختبارات متنوعة لتحديد مستوى الطلاب كشرط للحصول على الشهادة.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">نظام رفع واجبات (Assignments)</h4>
-                                <p class="text-gray-600">إمكانية رفع الطلاب لواجباتهم ومشاريعهم ليتم تقييمها من قبل الإدارة.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">موافقة إدارية على الشهادة</h4>
-                                <p class="text-gray-600">تحكم كامل للمدير في الموافقة على إصدار الشهادة بعد مراجعة الشروط.</p>
-                            </div>
-                             <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">إشعارات إدارية</h4>
-                                <p class="text-gray-600">استلام إشعار فوري عندما يكمل طالب متطلبات شهادته، بانتظار الموافقة.</p>
-                            </div>
-                             <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">تقييمات وتعليقات</h4>
-                                <p class="text-gray-600">نظام تقييم للدورات مع إمكانية فتح أو إغلاق قسم التعليقات لكل دورة.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Business Tab -->
-                    <div id="business" class="tab-content">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">بوابات دفع سعودية</h4>
-                                <p class="text-gray-600">دعم كامل لـ "مدى" وأنظمة التقسيط الشهيرة مثل "تابي" و "تمارا".</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">نظام عضويات متكامل</h4>
-                                <p class="text-gray-600">إنشاء خطط عضوية (شهرية/سنوية) بأسعار ومميزات مختلفة لكل فئة.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">حجز اجتماعات (تقويم)</h4>
-                                <p class="text-gray-600">نظام تقويم مدمج يسمح للعملاء بحجز مواعيد متاحة للاجتماعات والاستشارات.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">قسم وظائف شاغرة</h4>
-                                <p class="text-gray-600">صفحة مخصصة لعرض الوظائف المتاحة في شركتك واستقطاب المواهب.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">شات تفاعلي</h4>
-                                <p class="text-gray-600">نظام محادثة فورية على الموقع لدعم العملاء والإجابة على استفساراتهم.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">ردود تلقائية (Chatbot)</h4>
-                                <p class="text-gray-600">إمكانية إعداد ردود آلية للأسئلة الشائعة لتوفير الدعم على مدار الساعة.</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Admin Tab -->
-                    <div id="admin" class="tab-content">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div class="bg-white p-6 rounded-lg border border-blue-600 ring-2 ring-blue-200">
-                                <h4 class="font-bold text-lg mb-2 text-blue-700">تسليم الكود المصدري (Source Code)</h4>
-                                <p class="text-gray-600">ملكية كاملة للكود المصدري للمنصة لضمان الاستقلالية والتطوير المستقبلي.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">لوحة تحكم عصرية</h4>
-                                <p class="text-gray-600">داش بورد سهلة الاستخدام لمتابعة كل شيء، من رفع الدورات إلى مشاهدة التقارير.</p>
-                            </div>
-                            <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">إدارة الشهادات</h4>
-                                <p class="text-gray-600">قسم خاص لمراجعة الشهادات والموافقة عليها أو رفضها بنقرة زر.</p>
-                            </div>
-                             <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">سجل الموافقات (Audit Trail)</h4>
-                                <p class="text-gray-600">تسجيل هوية المدير الذي قام بالموافقة على كل شهادة لضمان الحوكمة.</p>
-                            </div>
-                             <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">تقارير الحضور والغياب</h4>
-                                <p class="text-gray-600">معرفة من حضر المحاضرات المباشرة ومن شاهد المحاضرات المسجلة بسهولة.</p>
-                            </div>
-                             <div class="bg-white p-6 rounded-lg border border-gray-200">
-                                <h4 class="font-bold text-lg mb-2">إدارة سهلة للمحتوى</h4>
-                                <p class="text-gray-600">أدوات بسيطة لرفع الدورات، المقالات، والوظائف دون الحاجة لخبرة تقنية.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Courses Section -->
-        <section id="courses" class="py-20 bg-white">
-            <div class="container mx-auto px-6">
-                <div class="text-center mb-16 section-animated">
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">اكتشف أحدث الدورات التدريبية</h2>
-                    <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">دورات مصممة لتلبية متطلبات سوق العمل السعودي، في أهم المجالات والتخصصات.</p>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Course Card 1 -->
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 section-animated">
-                        <div class="h-48 bg-gray-200 flex items-center justify-center text-gray-400">صورة الدورة</div>
-                        <div class="p-6">
-                            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">مدعومة من هدف</span>
-                            <h3 class="text-xl font-bold mt-4 mb-2">مقدمة في الأمن السيبراني</h3>
-                            <div class="flex items-center text-sm text-gray-500 mb-4">
-                                <div class="w-8 h-8 rounded-full bg-gray-300 mr-3 ml-3"></div>
-                                <span>أ. خالد العامري</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <div class="text-2xl font-extrabold text-blue-600">450 <span class="text-sm font-normal">ريال</span></div>
-                                <div class="text-yellow-400">★★★★☆</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Course Card 2 -->
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 section-animated" style="transition-delay: 100ms;">
-                        <div class="h-48 bg-gray-200 flex items-center justify-center text-gray-400">صورة الدورة</div>
-                        <div class="p-6">
-                            <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">الأكثر طلباً</span>
-                            <h3 class="text-xl font-bold mt-4 mb-2">تحليل البيانات باستخدام Python</h3>
-                            <div class="flex items-center text-sm text-gray-500 mb-4">
-                                <div class="w-8 h-8 rounded-full bg-gray-300 mr-3 ml-3"></div>
-                                <span>د. سارة المحمدي</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <div class="text-2xl font-extrabold text-blue-600">600 <span class="text-sm font-normal">ريال</span></div>
-                                <div class="text-yellow-400">★★★★★</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Course Card 3 -->
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 section-animated" style="transition-delay: 200ms;">
-                        <div class="h-48 bg-gray-200 flex items-center justify-center text-gray-400">صورة الدورة</div>
-                        <div class="p-6">
-                             <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">مدعومة من هدف</span>
-                            <h3 class="text-xl font-bold mt-4 mb-2">أساسيات إدارة المشاريع (PMP)</h3>
-                            <div class="flex items-center text-sm text-gray-500 mb-4">
-                                <div class="w-8 h-8 rounded-full bg-gray-300 mr-3 ml-3"></div>
-                                <span>م. عبدالله القحطاني</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <div class="text-2xl font-extrabold text-blue-600">850 <span class="text-sm font-normal">ريال</span></div>
-                                <div class="text-yellow-400">★★★★☆</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Pricing Section -->
-        <section id="pricing" class="py-20 bg-gray-50">
-            <div class="container mx-auto px-6">
-                <div class="text-center mb-16 section-animated">
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">خطط أسعار مرنة للجميع</h2>
-                    <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">اختر الخطة التي تناسب احتياجاتك، سواء كنت فرداً أو شركة.</p>
-                </div>
-                <div class="flex flex-wrap justify-center items-stretch gap-8">
-                    <!-- Pricing Card 1 -->
-                    <div class="w-full max-w-sm bg-white p-8 rounded-xl border border-gray-200 shadow-lg flex flex-col section-animated">
-                        <h3 class="text-2xl font-bold text-center">الدورات المفردة</h3>
-                        <p class="text-gray-500 text-center mt-2">لكل من يسعى لتعلم مهارة محددة</p>
-                        <div class="text-center my-8">
-                            <span class="text-4xl font-extrabold">ادفع لكل دورة</span>
-                        </div>
-                        <ul class="space-y-4 text-gray-700 mb-8">
-                            <li class="flex items-center"><span class="text-green-500 mr-3 ml-3">✔</span> وصول مدى الحياة للمحتوى</li>
-                            <li class="flex items-center"><span class="text-green-500 mr-3 ml-3">✔</span> شهادة معتمدة عند الإتمام</li>
-                            <li class="flex items-center"><span class="text-green-500 mr-3 ml-3">✔</span> دعم فني عبر البريد</li>
-                        </ul>
-                         <a href="#courses" class="mt-auto block w-full bg-gray-800 text-white text-center py-3 rounded-lg shadow-md hover:bg-gray-900 transition-colors">تصفح الدورات</a>
-                    </div>
-                    <!-- Pricing Card 2 (Highlight) -->
-                    <div class="w-full max-w-sm bg-white p-8 rounded-xl border-2 border-blue-600 shadow-2xl transform md:scale-105 flex flex-col section-animated" style="transition-delay: 100ms;">
-                        <h3 class="text-2xl font-bold text-center">العضويات</h3>
-                        <p class="text-gray-500 text-center mt-2">للتعلم المستمر والحصول على قيمة أكبر</p>
-                        <div class="text-center my-8">
-                            <span class="text-4xl font-extrabold">اشتراك شهري</span>
-                            <p class="text-gray-500">أو سنوي بتوفير أكبر</p>
-                        </div>
-                        <ul class="space-y-4 text-gray-700 mb-8">
-                            <li class="flex items-center"><span class="text-green-500 mr-3 ml-3">✔</span> وصول لكل الدورات الحالية والقادمة</li>
-                            <li class="flex items-center"><span class="text-green-500 mr-3 ml-3">✔</span> شهادات غير محدودة</li>
-                            <li class="flex items-center"><span class="text-green-500 mr-3 ml-3">✔</span> دخول للمجتمعات الحصرية</li>
-                            <li class="flex items-center"><span class="text-green-500 mr-3 ml-3">✔</span> خصومات على الدورات المتقدمة</li>
-                        </ul>
-                         <a href="#" class="mt-auto block w-full bg-blue-600 text-white text-center py-3 rounded-lg shadow-md hover:bg-blue-700 transition-colors">اختر باقة العضوية</a>
-                    </div>
-                    <!-- Pricing Card 3 -->
-                    <div class="w-full max-w-sm bg-white p-8 rounded-xl border border-gray-200 shadow-lg flex flex-col section-animated" style="transition-delay: 200ms;">
-                         <h3 class="text-2xl font-bold text-center">الشركات</h3>
-                         <p class="text-gray-500 text-center mt-2">لفرق العمل الطموحة</p>
-                         <div class="text-center my-8">
-                            <span class="text-4xl font-extrabold">تسعير مخصص</span>
-                         </div>
-                         <ul class="space-y-4 text-gray-700 mb-8">
-                            <li class="flex items-center"><span class="text-green-500 mr-3 ml-3">✔</span> كل مزايا العضويات</li>
-                            <li class="flex items-center"><span class="text-green-500 mr-3 ml-3">✔</span> لوحة تحكم للمدراء</li>
-                            <li class="flex items-center"><span class="text-green-500 mr-3 ml-3">✔</span> تقارير أداء وتتبع</li>
-                            <li class="flex items-center"><span class="text-green-500 mr-3 ml-3">✔</span> إمكانية تخصيص المحتوى</li>
-                         </ul>
-                         <a href="#b2b" class="mt-auto block w-full bg-gray-800 text-white text-center py-3 rounded-lg shadow-md hover:bg-gray-900 transition-colors">تواصل معنا</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Final CTA -->
-        <section class="py-20 bg-white">
-             <div class="container mx-auto px-6 text-center section-animated">
-                  <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">هل أنت مستعد لبناء مستقبل مهني باهر؟</h2>
-                  <div class="mt-8">
-                     <a href="#" class="bg-blue-600 text-white px-10 py-4 text-lg rounded-lg shadow-xl hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 inline-block">
-                         أنشئ حسابك الآن مجاناً
-                     </a>
-                 </div>
-             </div>
-        </section>
-
-    </main>
-    
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white">
-        <div class="container mx-auto px-6 py-12">
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-8">
-                <div class="col-span-2 md:col-span-1">
-                    <h3 class="text-xl font-bold mb-4">منصتي</h3>
-                    <p class="text-gray-400">منصتك التعليمية المتكاملة للتطوير المهني المعتمد في السعودية.</p>
-                </div>
-                <div>
-                    <h3 class="font-bold mb-4">المنصة</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#features" class="text-gray-400 hover:text-white transition">لماذا نحن؟</a></li>
-                        <li><a href="#courses" class="text-gray-400 hover:text-white transition">الدورات</a></li>
-                        <li><a href="#pricing" class="text-gray-400 hover:text-white transition">الأسعار</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="font-bold mb-4">المحتوى</h3>
-                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">المقالات</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">محتوى مرئي</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="font-bold mb-4">عن الشركة</h3>
-                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">الوظائف</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">انضم كمدرب</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">تواصل معنا</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="font-bold mb-4">تابعنا</h3>
-                    <div class="flex space-x-4 space-x-reverse">
-                        <a href="#" class="text-gray-400 hover:text-white transition text-2xl">X</a>
-                        <a href="#" class="text-gray-400 hover:text-white transition text-2xl">in</a>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-12 border-t border-gray-700 pt-6 text-center text-gray-500">
-                <p>&copy; 2024 منصتي. جميع الحقوق محفوظة.</p>
-            </div>
-        </div>
-    </footer>
+        </main>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            
-            // Animated Counters
-            const counters = document.querySelectorAll('.counter');
-            const speed = 200; 
+        // --- DUMMY DATA ---
+        const kpiData = {
+            last7days: {
+                labels: ['اليوم 1', 'اليوم 2', 'اليوم 3', 'اليوم 4', 'اليوم 5', 'اليوم 6', 'اليوم 7'],
+                designer: { designsCompleted: 15, avgTime: 4, revisions: 5, satisfaction: [80, 15, 5], designsHistory: [2, 3, 1, 4, 2, 1, 2] },
+                social: { followersTotal: 10220, followersHistory: [10000, 10050, 10080, 10120, 10150, 10190, 10220], interactionsTotal: 1250, interactionsHistory: [150, 180, 160, 200, 190, 220, 150] },
+                mediaBuyer: { roas: 5.2, leadsTotal: 85, roasHistory: [5.0, 5.1, 5.5, 5.2, 5.3, 4.9, 5.2], leadsHistory: [10, 12, 9, 15, 13, 16, 10] }
+            },
+            last30days: {
+                labels: ['الأسبوع 1', 'الأسبوع 2', 'الأسبوع 3', 'الأسبوع 4'],
+                designer: { designsCompleted: 62, avgTime: 4.8, revisions: 18, satisfaction: [75, 20, 5], designsHistory: [12, 18, 15, 17] },
+                social: { followersTotal: 10700, followersHistory: [10000, 10150, 10450, 10700], interactionsTotal: 5500, interactionsHistory: [1200, 1500, 1300, 1500] },
+                mediaBuyer: { roas: 4.8, leadsTotal: 350, roasHistory: [4.5, 5.0, 4.7, 4.8], leadsHistory: [80, 95, 85, 90] }
+            },
+            thisMonth: {
+                labels: ['الأسبوع 1', 'الأسبوع 2', 'الأسبوع 3', 'الأسبوع 4'],
+                designer: { designsCompleted: 55, avgTime: 5.1, revisions: 15, satisfaction: [78, 18, 4], designsHistory: [10, 15, 14, 16] },
+                social: { followersTotal: 10650, followersHistory: [10000, 10200, 10480, 10650], interactionsTotal: 5800, interactionsHistory: [1300, 1400, 1600, 1500] },
+                mediaBuyer: { roas: 5.0, leadsTotal: 380, roasHistory: [4.8, 5.1, 5.0, 5.2], leadsHistory: [90, 100, 95, 95] }
+            },
+            lastMonth: {
+                labels: ['الأسبوع 1', 'الأسبوع 2', 'الأسبوع 3', 'الأسبوع 4'],
+                designer: { designsCompleted: 70, avgTime: 4.5, revisions: 22, satisfaction: [70, 25, 5], designsHistory: [15, 20, 18, 17] },
+                social: { followersTotal: 9800, followersHistory: [9000, 9230, 9510, 9800], interactionsTotal: 4900, interactionsHistory: [1100, 1300, 1200, 1300] },
+                mediaBuyer: { roas: 4.5, leadsTotal: 320, roasHistory: [4.2, 4.6, 4.4, 4.7], leadsHistory: [75, 85, 70, 90] }
+            },
+            last3Quarter: {
+                labels: ['الشهر 1', 'الشهر 2', 'الشهر 3'],
+                designer: { designsCompleted: 180, avgTime: 5.0, revisions: 50, satisfaction: [72, 22, 6], designsHistory: [55, 65, 60] },
+                social: { followersTotal: 12500, followersHistory: [8000, 10000, 12500], interactionsTotal: 15000, interactionsHistory: [4500, 5000, 5500] },
+                mediaBuyer: { roas: 4.9, leadsTotal: 1100, roasHistory: [4.8, 5.0, 4.9], leadsHistory: [350, 400, 350] }
+            },
+            lastYear: {
+                labels: ['الربع 1', 'الربع 2', 'الربع 3', 'الربع 4'],
+                designer: { designsCompleted: 750, avgTime: 5.2, revisions: 150, satisfaction: [70, 23, 7], designsHistory: [180, 200, 190, 180] },
+                social: { followersTotal: 20000, followersHistory: [5000, 10000, 15000, 20000], interactionsTotal: 60000, interactionsHistory: [12000, 15000, 18000, 15000] },
+                mediaBuyer: { roas: 4.7, leadsTotal: 4500, roasHistory: [4.5, 4.8, 4.7, 4.9], leadsHistory: [1000, 1200, 1300, 1000] }
+            }
+        };
 
-            const animateCounter = (counter) => {
-                const target = +counter.getAttribute('data-target');
-                let count = 0;
-                
-                const updateCount = () => {
-                    const inc = target / speed;
-                    count += inc;
-                    
-                    if (count < target) {
-                        counter.innerText = Math.ceil(count);
-                        setTimeout(updateCount, 1);
-                    } else {
-                        counter.innerText = target;
-                    }
-                };
-                updateCount();
-            };
+        // --- CHART INSTANCES ---
+        let satisfactionChart, designerProgressChart, 
+            followersProgressChart, interactionsProgressChart, 
+            roasProgressChart, leadsProgressChart;
 
-            // Intersection Observer for animations
-            const animatedSections = document.querySelectorAll('.section-animated');
-            
-            const sectionObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('section-visible');
-                        if (entry.target.id === 'social-proof') {
-                             document.querySelectorAll('.counter').forEach(counter => {
-                                if (counter.innerText === '0') {
-                                     animateCounter(counter);
-                                }
-                            });
-                        }
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            animatedSections.forEach(section => {
-                sectionObserver.observe(section);
-            });
-            
-            // Active Nav Link on Scroll
-            const sections = document.querySelectorAll('main section[id]');
-            const navLinks = document.querySelectorAll('header nav a');
-
-            const navObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const id = entry.target.getAttribute('id');
-                        navLinks.forEach(link => {
-                            link.classList.remove('active');
-                            if (link.getAttribute('href') === `#${id}`) {
-                                link.classList.add('active');
-                            }
-                        });
-                    }
-                });
-            }, { rootMargin: '-50% 0px -50% 0px' });
-
-            sections.forEach(section => {
-                navObserver.observe(section);
-            });
-
-            // Tabs functionality
-            const tabButtons = document.querySelectorAll('.tab-btn');
-            const tabContents = document.querySelectorAll('.tab-content');
-
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const tabId = button.getAttribute('data-tab');
-
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-
-                    tabContents.forEach(content => {
-                        if (content.id === tabId) {
-                            content.classList.add('active');
-                        } else {
-                            content.classList.remove('active');
-                        }
-                    });
-                });
-            });
-
+        // --- Generic Line Chart Config ---
+        const getLineChartConfig = (label, color) => ({
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: label,
+                    data: [],
+                    borderColor: color,
+                    backgroundColor: `${color}1a`,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                scales: { y: { beginAtZero: false } }, 
+                plugins: { legend: { display: false } } 
+            }
         });
+
+        // --- INITIALIZATION FUNCTION ---
+        function initializeDashboard() {
+            // Designer Charts
+            const ctxSatisfaction = document.getElementById('satisfaction-chart').getContext('2d');
+            satisfactionChart = new Chart(ctxSatisfaction, {
+                type: 'doughnut',
+                data: { labels: ['ممتاز', 'جيد', 'مقبول'], datasets: [{ data: [], backgroundColor: ['#2563eb', '#3b82f6', '#93c5fd'], borderColor: '#ffffff', borderWidth: 2 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } } }
+            });
+            const ctxDesignerProgress = document.getElementById('designer-progress-chart').getContext('2d');
+            designerProgressChart = new Chart(ctxDesignerProgress, getLineChartConfig('إنجاز التصاميم', '#2563eb'));
+
+            // Social Media Charts
+            const ctxFollowersProgress = document.getElementById('followers-progress-chart').getContext('2d');
+            followersProgressChart = new Chart(ctxFollowersProgress, getLineChartConfig('عدد المتابعين', '#16a34a'));
+            const ctxInteractionsProgress = document.getElementById('interactions-progress-chart').getContext('2d');
+            interactionsProgressChart = new Chart(ctxInteractionsProgress, getLineChartConfig('عدد التفاعلات', '#10b981'));
+
+            // Media Buyer Charts
+            const ctxRoasProgress = document.getElementById('roas-progress-chart').getContext('2d');
+            roasProgressChart = new Chart(ctxRoasProgress, getLineChartConfig('ROAS', '#7c3aed'));
+            const ctxLeadsProgress = document.getElementById('leads-progress-chart').getContext('2d');
+            leadsProgressChart = new Chart(ctxLeadsProgress, getLineChartConfig('عدد الليدز', '#8b5cf6'));
+
+
+            updateDashboard('last30days');
+        }
+
+        // --- UPDATE FUNCTION ---
+        function updateDashboard(period) {
+            const data = kpiData[period];
+            if (!data) return;
+
+            // --- Update Designer KPIs & Charts ---
+            document.getElementById('designs-completed').textContent = data.designer.designsCompleted;
+            document.getElementById('avg-time').textContent = data.designer.avgTime;
+            document.getElementById('revisions').textContent = data.designer.revisions;
+            satisfactionChart.data.datasets[0].data = data.designer.satisfaction;
+            satisfactionChart.update();
+            designerProgressChart.data.labels = data.labels;
+            designerProgressChart.data.datasets[0].data = data.designer.designsHistory;
+            designerProgressChart.update();
+
+            // --- Update Social Media KPIs & Charts ---
+            document.getElementById('followers-total').textContent = data.social.followersTotal.toLocaleString();
+            document.getElementById('interactions-total').textContent = data.social.interactionsTotal.toLocaleString();
+            followersProgressChart.data.labels = data.labels;
+            followersProgressChart.data.datasets[0].data = data.social.followersHistory;
+            followersProgressChart.update();
+            interactionsProgressChart.data.labels = data.labels;
+            interactionsProgressChart.data.datasets[0].data = data.social.interactionsHistory;
+            interactionsProgressChart.update();
+
+            // --- Update Media Buyer KPIs & Charts ---
+            document.getElementById('roas').textContent = `${data.mediaBuyer.roas}x`;
+            document.getElementById('leads-total').textContent = data.mediaBuyer.leadsTotal.toLocaleString();
+            roasProgressChart.data.labels = data.labels;
+            roasProgressChart.data.datasets[0].data = data.mediaBuyer.roasHistory;
+            roasProgressChart.update();
+            leadsProgressChart.data.labels = data.labels;
+            leadsProgressChart.data.datasets[0].data = data.mediaBuyer.leadsHistory;
+            leadsProgressChart.update();
+        }
+
+        // --- EVENT LISTENER ---
+        document.getElementById('time-filter').addEventListener('change', (event) => {
+            updateDashboard(event.target.value);
+        });
+
+        // --- RUN ON PAGE LOAD ---
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
     </script>
+
 </body>
 </html>
